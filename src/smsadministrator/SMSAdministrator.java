@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -5,6 +6,10 @@
  */
 package smsadministrator;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Locale;
 import java.util.Scanner;
 import smsadministrator.business.OperatorsList;
 import smsadministrator.business.SMSWorker;
@@ -44,20 +49,24 @@ public class SMSAdministrator {
     
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        Locale locale = new Locale("es", "ES");
         String command;
         stopApplication = true;
         
         initialize();
         
-        Scanner terminalScanner = new Scanner(System.in);
+        DataInputStream terminal = new DataInputStream(System.in);
+        
         //start thread for receiving messages to the queue
         //configure until time
         while(stopApplication){
             System.out.print(CURSOR_STRING);
-            command = terminalScanner.nextLine();
+            command = terminal.readLine();
             
+
             runCommand(command);
         }
     }
