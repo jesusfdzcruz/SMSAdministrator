@@ -27,24 +27,33 @@ public class Cellphone {
     }
     
     public boolean sendMessage(String number, String message){
+        sendCommand(SMSOperations.SEND_MESSAGE.ordinal());
+           
+        sendText(number);    
+        
+        sendText(message);        
+                        
+        mNumberOfMessages++;
+        return true;
+    }
+    
+    public boolean sendCommand(int command){
+        boolean result = true;
         try{
             Socket socket = new Socket(mIP, mPort);
             
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             
-            dataOutputStream.writeInt(SMSOperations.SEND_MESSAGE.ordinal());
-            
-            dataOutputStream.writeChars(number);
-            
-            dataOutputStream.writeChars(message);
-                        
-            mNumberOfMessages++;
-            return true;
+            dataOutputStream.writeInt(command);
+
+            socket.close();
         }
         catch(IOException error){
             error.printStackTrace();
-            return false;
+            result =  false;
         }
+        
+        return result;
     }
     
     public int getmNumberOfMessages() {
@@ -58,5 +67,25 @@ public class Cellphone {
     public String getmIP() {
         return mIP;
     }   
+
+    public boolean sendText(String text) {
+        boolean result = true;
+        
+        try{
+            Socket socket = new Socket(mIP, mPort);
+            
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            
+            dataOutputStream.writeUTF(text+"\n");
+
+            socket.close();
+        }
+        catch(IOException error){
+            error.printStackTrace();
+            result =  false;
+        }
+        
+        return result;
+    }
     
 }
